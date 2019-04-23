@@ -1,0 +1,25 @@
+<%= render 'shared/admin/piece/show' do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :target_db_id %></th>
+    <td><%= @item.target_db.try(:title) %></td>
+  </tr>
+    <%- @item.target_fields.each do |target_field| -%>
+    <tr>
+      <th><%= @item.class.human_attribute_name :target_field_id %></th>
+      <td>
+        <%= target_field.try(:title) %>
+        <%
+        options = @item.options_for_field(target_field)
+        if target_field.item_type != 'blank_integer' %>
+        <div class="options">
+          <span>検索対象記号：</span><%= options.join(",")%>
+        </div>
+        <% end %>
+      </td>
+    </tr>
+    <%- end -%>
+</table>
+<%- end -%>

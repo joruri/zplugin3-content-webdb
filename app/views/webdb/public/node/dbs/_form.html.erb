@@ -1,0 +1,8 @@
+<%= init_ckeditor baseHref: @item.edit_uri %>
+
+<%= render 'webdb/admin/shared/form', db: @item.db, item_values: @item.item_values if @item.db %>
+
+<%- if @content.map_enabled? -%>
+<p class="form">位置情報</p>
+<%= google_map_form f %>
+<%- end -%>

@@ -1,0 +1,47 @@
+<%= init_ckeditor baseHref: "#{webdb_db_entries_path(content: @content, db_id: @db.id, id: @item.id.to_i)}/" %>
+
+<%= render 'webdb/admin/shared/form', db: @item.db, item_values: @item.item_values, use_admin: true if @item.db %>
+
+<% if defined?(Zplugin3::Content::Login::Engine) && @db.editor_content %>
+  <table class="show">
+    <tr>
+      <th><%= f.label :editor_id %></th>
+      <td><%= select_tag 'item[editor_id]',
+                         options_from_collection_for_select(@db.editor_content.try(:users), :id, :account, @item.editor_id), include_blank: true %></td>
+     </tr>
+   </table>
+<% end %>
+
+<%= render 'sys/admin/_partial/files/form', f: f, item: @item, content: @content %>
+<%- if @content.map_enabled? -%>
+<p class="form">位置情報</p>
+<%= google_map_form f, @item %>
+<%- end -%>
+
+<%= creator_form f %>
+<%= javascript_tag do %>
+$(function() {
+
+
+  $(document.body).on('click', '.removeDate',  function(e) {
+    $(this).parent().remove();
+    return false;
+  });
+
+  <% if @item && @item.id %>
+  $(".deleteDate").click(function (e) {
+    e.preventDefault();
+    <% if defined?(use_admin) %>
+    var deleteURL = '<%= webdb_db_entry_path(content: @content) %>/delete_event';
+    <% else %>
+    var deleteURL = '<%= @item.delete_event_uri %>';
+    <% end %>
+    var itemId = $(this).attr('id')
+    var dateID = itemId.replace(/delete/, '')
+    $.get( deleteURL + '?event_id=' + dateID , function(data) {
+        //
+      });
+    $(this).parent().remove();
+  });
+  <% end %>
+<% end %>

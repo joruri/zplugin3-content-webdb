@@ -1,0 +1,17 @@
+<div class="contentWebdb">
+  <%= form_tag "#{@node.public_uri}#{@db.id}/search", method: :get, class: 'search' do |f| %>
+    <%= hidden_field_tag 'sort', @db.items.target_sort_state.first.try(:name) %>
+    <%= render 'webdb/public/shared/form_space', db: @db, items: @items %>
+  <div class="submitters">
+    <input type="submit" value="検索" />
+  </div>
+<%- end -%>
+<%= javascript_tag do %>
+$(function() {
+  $('input.datepicker').datepicker();
+});
+<%- end -%>
+
+
+</div>
+

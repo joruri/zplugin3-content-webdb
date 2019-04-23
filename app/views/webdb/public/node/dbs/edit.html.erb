@@ -1,0 +1,7 @@
+<div class="contentWebdb">
+<%= form_for @item, as: :item, url: @item.edit_uri, html: { method: :put } do |f| %>
+  <%= error_messages_for :entry %>
+  <%= render 'form', f: f %>
+  <%= submit_tag '保存' %>
+<% end %>
+</div>

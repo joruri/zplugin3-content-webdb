@@ -1,0 +1,9 @@
+<div class="contentWebdb">
+<% @dbs.each do |db| %>
+<section class="webdb<%=db.id%>"><a href="<%="#{Page.current_node.public_uri}#{db.id}"%>" style="height: 119.45px;">
+<h2><%=db.title%></h2>
+<span class="summary"><%=db.body%></span>
+</a>
+</section>
+<% end %>
+</div>

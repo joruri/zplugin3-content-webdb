@@ -1,0 +1,32 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th>ID</th>
+    <th><%= @db.items.first.try(:title) %></th>
+    <th style="text-align: center; width: 150px">所属</th>
+    <th style="text-align: center; width: 150px">作成者</th>
+    <th style="text-align: center; width: 150px;"><%= GpArticle::Doc.human_attribute_name :updated_at %></th>
+    <th style="text-align: center; width: 100px;"><%= GpArticle::Doc.human_attribute_name :state %></th>
+    <th style="text-align: center; width: 100px;">プレビュー</th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, webdb_db_entry_path(content: @content, db_id: @db.id, id: item.id) %></td>
+    <td style="text-align: left;"><%= item.id %></td>
+    <td style="text-align: left;">
+      <%= simple_format entry_item_value(@db.items.first, item, item.files).gsub(/file_contents\//, "#{item.id}/file_contents/") %>
+    </td>
+    <td><%= item.creator.group.try(:name) %></td>
+    <td><%= item.creator.user.try(:name) %></td>
+    <td style="text-align: center;"><%=l item.updated_at %></td>
+    <td style="text-align: center;"><%= item.state_text %></td>
+    <td style="text-align: center;">
+      <%= preview_links(item.content.site, item.preview_uri,
+                                   item.preview_uri(terminal: :smart_phone),
+                                   item.preview_uri(terminal: :mobile)) %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

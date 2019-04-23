@@ -1,0 +1,139 @@
+<%= render 'shared/admin/piece/form', f: f do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :target_db_id %></th>
+    <td><%= f.array_select 'in_settings[target_db_id]', @item.target_dbs_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :target_field_id %></th>
+    <td>
+    <table class="show" id="target_field_list">
+      <% if @item.target_fields.present? -%>
+        <%- @item.target_fields.each_with_index do |field, i| -%>
+        <tr class="target_firld_tr">
+          <td><%= select_tag 'target_field_id[]',
+            options_for_select(@item.target_fields_for_option, field.id),
+            include_blank: true, class: 'target_field_select' %>
+            <%= link_to "×", "#", class: 'remove' if i != 0 %>
+            <div class="options"<% if field.item_type == "blank_integer" %> style="display: none;"<% end %>>
+              <span>検索対象記号：</span>
+              <% if field.item_options_for_select
+                field.item_options_for_select.each_with_index do |option, n|%>
+                <%= check_box_tag "field_options[#{field.id}][]", option,
+                  @item.is_checked_option?(field, option),
+                  id: "field_options_#{field.id}_#{n}" %>
+                <label for="<%="field_options_#{field.id}_#{n}"%>"><%= option %></label>
+              <% end
+              end %>
+            </div>
+          </td>
+         </tr>
+        <%- end -%>
+      <%- else -%>
+      <tr class="target_firld_tr">
+       <td>
+         <%= select_tag 'target_field_id[]',
+          options_for_select(@item.target_fields_for_option, nil),
+          include_blank: true, class: 'target_field_select' %>
+          <div class="options"></div>
+       </td>
+      </tr>
+      <%- end -%>
+      </table>
+      <%= button_tag '追加', type: 'button', class: 'add_button' %>
+    </td>
+  </tr>
+</table>
+<%- end -%>
+<%= javascript_tag do -%>
+$(document).ready(function() {
+
+  $('.add_button').click(function(e) {
+    var idx = $(".target_firld_tr").length;
+    $("#target_field_list > tbody > tr:last").clone(true).appendTo(
+      $("#target_field_list > tbody")
+    );
+    $("#target_field_list > tbody > tr:last > td > select").val('');
+    $("#target_field_list > tbody > tr:last > td > div").html('');
+
+    if(idx==1){
+      $('<a>').attr({
+          class: "remove",
+          href: "#"
+      }).html("×").insertAfter($("#target_field_list > tbody > tr:last > td > select"));
+    }
+
+  });
+
+  $(document.body).on('click', '.remove',  function(e) {
+    $(this).closest("tr").remove();
+    return false;
+  });
+
+  $('#item_in_settings_target_db_id').on('change', function (event) {
+    var db_id = parseInt(event.target.value);
+    var target_fields = $(".target_field_select")
+    var option_fields = $(".options")
+    if (isNaN(db_id)) {
+      target_fields.html('<option value=""></option>');
+      option_fields.html('');
+    } else {
+      $('#item_reference_item_id').html('<option value="">更新中...</option>');
+      $.get('<%= webdb_dbs_path(content: @item.content) %>/' + db_id + '/items.json', function(data) {
+        target_fields.children().remove();
+        target_fields.html('<option value=""></option>');
+        option_fields.html('');
+        $.each(data, function(i, e) {
+          var item_type = data[i].item_type;
+          if(item_type.match(/blank/)){
+            target_fields
+              .append($("<option>").val(data[i].id).text(data[i].title));
+          }
+        });
+      });
+    }
+  });
+
+  $(document.body).on('change', '.target_field_select',  function(e) {
+    var field_id = $(this).val();
+    var form_id  = $(this).attr('id');
+    var db_id = $('#item_in_settings_target_db_id').val();
+    var idx = $(".target_firld_tr").length;
+    var options_div = $(this).nextAll(".options");
+    if (isNaN(field_id)) {
+      options_div.html('');
+    }else{
+      $.get('<%= webdb_dbs_path(content: @item.content) %>/' + db_id + '/items/' + field_id + '.json', function(data) {
+        var field_option = data.item_options;
+        options_div.html('');
+        if(field_option){
+          $('<span>').html('検索対象記号：').appendTo(options_div);
+          var option_array = field_option.split(/\r\n|\r|\n/);
+          $.each(option_array, function(n, opt){
+            var id = 'field_options_' + field_id + '_' + n;
+            var name = 'field_options[' + field_id + '][]';
+            $('<input>').attr({
+                id: id,
+                name: name,
+                type: 'checkbox',
+                value: opt
+            }).appendTo(options_div);
+
+            $('<label>').attr({
+                for: id
+            }).html(opt).appendTo(options_div);
+          });
+          options_div.show();
+        }else{
+          options_div.html('');
+          options_div.hide();
+        }
+      });
+    }
+  });
+
+
+});
+<%- end -%>

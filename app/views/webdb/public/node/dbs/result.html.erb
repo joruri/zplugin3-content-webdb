@@ -1,0 +1,48 @@
+<div class="contentWebdb">
+<form id="custom_search" method="get">
+  <%- @db.items.each do |item|
+    param = params.dig(:criteria, item.name)
+    next if param.blank?%>
+    <%- case item.item_type
+      when 'check_box', 'check_data'
+        param.each do |p|-%>
+          <%= hidden_field_tag "criteria[#{item.name}][]", p%>
+        <%- end
+      when 'ampm'
+        param.each do |key, p|
+          p.each do |c_key, c|-%>
+          <%= hidden_field_tag "criteria[#{item.name}][#{key}][#{c_key}]", c%>
+          <%- end -%>
+        <%- end
+      when 'blank_date', 'blank_weekday', 'office_hours'
+        param.each do |key, p| -%>
+          <%= hidden_field_tag "criteria[#{item.name}][#{key}]", p%>
+        <%- end
+      else
+        if param.kind_of?(Array)
+          param.each do |p|-%>
+          <%= hidden_field_tag "criteria[#{item.name}][]", p%>
+        <%- end
+         else %>
+          <%= hidden_field_tag "criteria[#{item.name}]", params.dig(:criteria, item.name)%>
+        <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  <%= hidden_field_tag "keyword", params[:keyword]%>
+  <%= select_tag 'sort',
+      options_from_collection_for_select(@db.items.target_sort_state, :name, :title, params[:sort]),
+      onchange: "submit(this.form)" %>
+  <%= select_tag 'order',
+      options_for_select(@db.class::ORDERING_OPTIONS, params[:order]),
+      onchange: "submit(this.form)" %>
+</form>
+<%- if @items.blank? -%>
+  <p>該当する検索結果はありませんでした。</p>
+<%- else -%>
+  <%- @items.each_with_index do |item, i| -%>
+    <%= raw entry_body(@list_style, @db, item, group_id: @group_ids) %>
+  <%- end -%>
+<%- end -%>
+
+<%= public_paginate @items -%>
+</div>

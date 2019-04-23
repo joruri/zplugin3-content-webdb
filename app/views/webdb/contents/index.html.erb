@@ -1,0 +1,14 @@
+<table class="index">
+  <tr>
+    <th style="width: auto;"><%= Cms::Content.human_attribute_name :name %></th>
+    <th style="width: auto;"><%= Cms::Content.human_attribute_name :note %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= link_to h(item.name), item.admin_uri %></td>
+    <td><%= item.note %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= will_paginate @items %>

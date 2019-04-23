@@ -1,0 +1,64 @@
+ja:
+  activerecord:
+    models:
+      webdb/db: データベース
+      webdb/item: アイテム項目
+      webdb/entry: 登録データ
+    attributes:
+      webdb/db:
+        id: ID
+        state: 状態
+        title: データベース名
+        body: 概要
+        list_body: 一覧形式HTML
+        detail_body: 詳細形式HTML
+        member_list_body: 一覧形式HTML（会員閲覧用）
+        member_detail_body: 詳細形式HTML（会員閲覧用）
+        display_limit: 表示件数
+        sort_no: 並び順
+        member_content_id: 会員ユーザー
+        editor_content_id: 編集ユーザー
+        created_at: 作成日時
+        updated_at: 更新日時
+        in_group_pages: グループ向けHTML
+      webdb/item:
+        state: 状態
+        name: アイテムID
+        title: 名称
+        item_type: 種別
+        item_options: 選択候補
+        style_attribute: スタイルシート
+        sort_no: 並び順
+        is_target_sort: 並び順指定の対象
+        is_target_search: 項目検索の対象
+        is_target_keyword: キーワード検索の対象
+        is_limited_access: 閲覧の対象者
+        created_at: 作成日時
+        updated_at: 更新日時
+        on_use: 利用する
+        enabled_resrict: 会員のみ閲覧可
+        reference_id: 参照データベース
+        reference_item_id: 項目
+        icon_item_id: アイコン画像項目
+      webdb/entry:
+        title: 名称
+        item_value: データ
+        editor_id: 編集許可ログイン
+        created_at: 作成日時
+        updated_at: 更新日時
+      webdb/piece/form:
+        target_db_id: 対象データベース
+      webdb/piece/map:
+        target_db_id: 対象データベース
+        window_text: 吹き出しHTML
+      webdb/piece/group:
+        target_db_id: 対象データベース
+        target_field_id: 検索対象項目
+        grouping_field_id: 大分類
+        value_field_id: 小分類
+        sort_field_id: 並び順指定項目
+        target_url: 遷移先URL
+      webdb/piece/space:
+        target_db_id: 対象データベース
+        target_field_id: 検索対象項目
+        

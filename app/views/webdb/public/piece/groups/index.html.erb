@@ -1,0 +1,28 @@
+<div class="category_<%=@target_field.name%>">
+  <%= form_tag @target_url, method: :get, class: 'search' do |f| %>
+    <%= hidden_field_tag 'sort', @db.items.target_sort_state.first.try(:name) %>
+    <%
+    i = 0
+    @forms.each_with_index do |(from, fields), n| %>
+      <fieldset>
+        <legend><%= from %></legend>
+          <ul class="check_<%=@target_field.name%>_<%=n%>">
+          <%- fields.each do|w| -%>
+            <li>
+              <%= check_box_tag "criteria[#{@target_field.name}][]", w[:value], false,
+                id: "criteria_#{@target_field.name}_#{i}" %>
+              <label for='<%="criteria_#{@target_field.name}_#{i}"%>'><%=w[:title]%></label>
+            </li>
+          <%-
+          i += 1
+          end -%>
+          </ul>
+      </fieldset>
+    <%- end -%>
+  <div class="submitters">
+    <input type="submit" value="検索" />
+  </div>
+  <%- end -%>
+
+</div>
+

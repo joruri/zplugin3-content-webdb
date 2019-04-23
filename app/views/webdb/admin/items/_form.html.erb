@@ -1,0 +1,101 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :name %> <span class="note">※</span></th>
+    <td><%= f.text_field :name, :class => 'name' %>（使用可能文字： 半角英数字,_,-）</td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :item_type %> <span class="note">※</span></th>
+    <td><%= f.select :item_type, @item.class::ITEM_TYPE_OPTIONS %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :item_options %><br />（種別が選択の時に使用）</th>
+    <td><%= f.text_area :item_options, :size => '100x5' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :reference_id %><br />（種別がデータベース参照選択の時に使用）</th>
+    <td><%= select_tag 'item[reference_id]',
+                       options_from_collection_for_select(@content.dbs, :id, :title, @item.reference_id), include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :reference_item_id %><br />（種別がデータベース参照選択の時に使用）</th>
+    <td>
+      <% if @item.reference_db%>
+      <%= select_tag 'item[reference_item_id]',
+                       options_from_collection_for_select(@item.reference_db.items, :id, :title, @item.reference_item_id), include_blank: true %>
+      <% else%>
+      <%= f.select :reference_item_id, [] %>
+      <%end%>
+   </td>
+  </tr>
+  <tr>
+    <th><%= f.label :icon_item_id %><br />（種別がデータベース参照選択の時に使用）</th>
+    <td>
+      <% if @item.reference_db%>
+      <%= select_tag 'item[icon_item_id]',
+                       options_from_collection_for_select(@item.reference_db.items, :id, :title, @item.icon_item_id), include_blank: true %>
+      <% else%>
+      <%= f.select :icon_item_id, [] %>
+      <%end%>
+   </td>
+  </tr>
+  <tr>
+    <th><%= f.label :style_attribute %><br />（style=）</th>
+    <td><%= f.text_field :style_attribute, :style => 'width: 600px;' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :is_target_sort %></th>
+    <td>
+      <%= f.check_box :is_target_sort %><label for="item_is_target_sort">利用する</label>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :is_target_search %></th>
+    <td>
+      <%= f.check_box :is_target_search %><label for="item_is_target_search">利用する</label>
+    </td>
+  </tr>
+  <tr>
+    <th><%= f.label :is_target_keyword %></th>
+    <td>
+      <%= f.check_box :is_target_keyword %><label for="item_is_target_keyword">利用する</label>
+    </td>
+  </tr>
+</table>
+
+<%= javascript_tag do -%>
+$(document).ready(function() {
+  $('#item_reference_id').on('change', function (event) {
+    var db_id = parseInt(event.target.value);
+    if (isNaN(db_id)) {
+      $('#item_reference_item_id').html('<option value=""></option>');
+      $('#item_icon_item_id').html('<option value=""></option>');
+    } else {
+      $('#item_reference_item_id').html('<option value="">更新中...</option>');
+      $.get('<%= webdb_dbs_path(content: @content) %>/' + db_id + '/items.json', function(data) {
+        $('#item_reference_item_id').children().remove();
+        $('#item_icon_item_id').children().remove();
+        $('#item_icon_item_id').append($("<option>").val("").text(""));
+        $.each(data, function(i, e) {
+          $('#item_reference_item_id').append($("<option>").val(data[i].id).text(data[i].title));
+          $('#item_icon_item_id').append($("<option>").val(data[i].id).text(data[i].title));
+        });
+      });
+    }
+  });
+});
+<%- end -%>
+

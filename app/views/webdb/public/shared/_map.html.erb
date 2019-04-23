@@ -1,0 +1,64 @@
+<div class="keyword">
+  <label for="keyword">住所を入力するとその付近の施設を検索します</label>
+  <%= text_field_tag "address", '' %><input type="button" value="検索" id="doGeocode" />
+</div>
+  <div id="map_canvas" style="height:450px;"></div>
+  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{content.site.google_map_api_key}&region=jp" %>
+  <%= javascript_include_tag '/_common/modules/map/js/map.js' %>
+  <%= javascript_tag do -%>
+  var map;
+  var geocoder = new google.maps.Geocoder();
+  var nearbyLocation;
+  var marker_id ='geocodingMarker' ;
+  google.maps.event.addDomListener(window, 'load', function (event) {
+    initMap();
+  });
+
+  function initMap(){
+    map = new MapViewer('map_canvas', <%= content.default_map_position.first %>, <%= content.default_map_position.last %>);
+    nearbyLocation = new google.maps.LatLng( <%= content.default_map_position.first %>, <%= content.default_map_position.last %> );
+
+    <%- markers.each do |item|
+      next unless map_markers = item.map_marker
+      map_icon = item.map_icon
+      map_markers.each do |marker| -%>
+      map.set_marker('<%= "#{marker.latitude}_#{marker.longitude}" %>', <%= marker.latitude %>, <%= marker.longitude %>, '<%= marker.title %>',
+                     '<%=raw simple_format(marker_window_text(item, @piece), {}, sanitize: false).gsub(/\r|\n/, '').gsub("'", '&#x27;') %>',
+                     '<%= map_icon %>' );
+      <%- end -%>
+    <%- end -%>
+  }
+
+  $('#address').keypress( function ( e ) {
+    if ( e.which == 13 ) {
+      doGeocode();
+      return false;
+    }
+  } );
+
+  $('#doGeocode').on('click', function() {
+    doGeocode();
+    return false;
+  });
+
+  function doGeocode(){
+    var address = $('#address').val();
+    geocoder.geocode( { 'address': address, location: nearbyLocation}, function(results, status) {
+      if (status == 'OK') {
+        if(map._markers[marker_id]!=null){
+          map._markers[marker_id].setMap(null);
+        }
+        var title = results[0].formatted_address;
+        var lat = results[0].geometry.location.lat();
+        var lng = results[0].geometry.location.lng();
+        map.set_marker(marker_id, lat, lng, title, title, null);
+        map.move_to(marker_id);
+        return false;
+      } else {
+        alert("座標を取得できませんでした。");
+      }
+    });
+  }
+
+  <%- end -%>
+

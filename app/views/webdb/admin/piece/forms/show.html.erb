@@ -1,0 +1,10 @@
+<%= render 'shared/admin/piece/show' do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :target_db_id %></th>
+    <td><%= @item.target_db.try(:title) %></td>
+  </tr>
+</table>
+<%- end -%>

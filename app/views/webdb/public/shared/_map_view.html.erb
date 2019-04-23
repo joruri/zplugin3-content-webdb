@@ -1,0 +1,69 @@
+<%
+map     = item.maps.first
+markers = map ? map.markers : []
+return '' unless map
+return '' if map.map_lat.blank? || map.map_lng.blank?
+%>
+<%- if item.state != 'closed' -%>
+<%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{item.site.google_map_api_key}&region=jp" %>
+<script type="text/javascript">
+//<![CDATA[
+
+function addEvent(element, listener, func) {
+  try {
+    element.addEventListener(listener, func, false);
+  } catch (e) {
+    element.attachEvent('on' + listener, func);
+  }
+}
+
+addEvent(window, 'load', function() {
+  var mapOptions = {
+    center: new google.maps.LatLng(<%= map.map_lat %>, <%= map.map_lng %>),
+    zoom: <%= map.map_zoom %>,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    scaleControl: true,
+    scrollwheel: false
+  };
+  var map = new google.maps.Map(document.getElementById("map1"), mapOptions);
+
+  <%
+  map_icon = item.map_icon
+  markers.each_with_index do |marker, idx| %>
+    var marker<%= idx %> = new google.maps.Marker({
+      //title: '<%= marker.name.gsub(/'/, "\\\\'") %>'
+      position: new google.maps.LatLng(<%= marker.lat %>, <%= marker.lng %>),
+      map: map
+    });
+
+    <%- if map_icon -%>
+    marker<%= idx %>.setIcon('<%= map_icon %>');
+    <%- end -%>
+
+    var infowindow<%= idx %> = new google.maps.InfoWindow({
+      content: '<%= marker.name.gsub(/'/, "\\\\'").gsub(/\r\n|\r|\n/, "<br />") %>',
+      disableAutoPan: false
+    });
+    google.maps.event.addListener(marker<%= idx %>, 'click', function() {
+      infowindow<%= idx %>.open(map, marker<%= idx %>);
+    });
+  <% end %>
+});
+
+//]]>
+</script>
+<%- end -%>
+
+<div class="maps">
+  <h2>地図</h2>
+  <% if !map.title.blank? %><h3><%= map.title %></h3><% end %>
+  <div id="map1" class="map" style="width: 100%; height: 400px">
+  <%- if item.state == 'closed' -%>
+    <div style="width: 100%; display: table;">
+      <div style="height: 400px; display: table-cell; background-color: #dcdcdc; text-align: center; vertical-align: middle;">
+        <span>公開終了状態のため地図は表示されません</span>
+      </div>
+    </div>
+  <%- end -%>
+  </div>
+</div>

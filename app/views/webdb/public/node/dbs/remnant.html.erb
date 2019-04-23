@@ -1,0 +1,32 @@
+<div class="contentWebdb">
+  <link rel="stylesheet" media="screen" href="/_common/css/jquery-ui-themes/smoothness/jquery-ui.min.css" />
+  <script src="/_common/js/jquery-ui.min.js"></script>
+  <link rel="stylesheet" media="screen" href="/_common/css/jquery-ui-timepicker-addon.css" />
+  <script src="/_common/js/jquery-ui-timepicker-addon.js"></script>
+  <%= javascript_include_tag '/_common/js/jquery-ui-datepicker-ja.js' %>
+  <%= javascript_include_tag '/_common/js/jquery-ui-timepicker-addon-ja.js' %>
+
+  <%= form_tag @search_url, method: :get, class: 'search' do |f| %>
+    <div id="dateForm">
+      <%= render 'webdb/public/shared/form', db: @db, items: @date_items %>
+    </div>
+    <div id="numberForm">
+      <%= render 'webdb/public/shared/form', db: @db, items: @number_items %>
+    </div>
+    <div id="weekForm">
+      <%= render 'webdb/public/shared/form', db: @db, items: @week_items %>
+    </div>
+    <div class="submitters">
+      <input type="submit" value="検索" />
+    </div>
+  <%- end -%>
+<%= javascript_tag do %>
+$(function() {
+
+  $('input.datepicker').datepicker();
+
+});
+<%- end -%>
+
+
+</div>

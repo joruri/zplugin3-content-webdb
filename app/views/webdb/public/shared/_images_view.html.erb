@@ -1,0 +1,8 @@
+<div class="images">
+  <%- for file in images -%>
+  <div class="photo">
+    <div class="image"><%= image_tag("#{item.file_content_uri}#{file.name}", alt: file.title) %></div>
+    <div class="title"><%= file.title %></div>
+  </div>
+  <%- end -%>
+</div>

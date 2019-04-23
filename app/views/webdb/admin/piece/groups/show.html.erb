@@ -1,0 +1,30 @@
+<%= render 'shared/admin/piece/show' do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :target_db_id %></th>
+    <td><%= @item.target_db.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :target_field_id %></th>
+    <td><%= @item.target_field.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :grouping_field_id %></th>
+    <td><%= @item.grouping_field.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :value_field_id %></th>
+    <td><%= @item.value_field.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_field_id %></th>
+    <td><%= @item.sort_field.try(:title) %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :target_url %></th>
+    <td><%= @item.target_url %></td>
+  </tr>
+</table>
+<%- end -%>

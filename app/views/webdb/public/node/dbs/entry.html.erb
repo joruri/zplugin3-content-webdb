@@ -1,0 +1,10 @@
+<div class="contentWebdb">
+  <div id="printButton">
+    <input value="印刷する" type="button">
+  </div>
+  <%- if @item.editor_id.present? && @editor_user.present? && @editor_user.id == @item.editor_id -%>
+    <%= link_to "編集する", @item.edit_uri, class: 'editLink' -%>
+  <%- end -%>
+  <% entry_detail_body = entry_body(@list_style, @db, @item, group_id: @group_ids) %>
+  <%= raw entry_detail_body.gsub(/\/_system\/(.*?)file_contents\//, "file_contents/") if entry_detail_body %>
+</div>

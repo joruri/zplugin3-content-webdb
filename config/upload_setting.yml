@@ -1,0 +1,5 @@
+upload_setting:
+  filename:
+    id: floor_map_file
+    type: pdf
+    title: フロア案内図をダウンロードする

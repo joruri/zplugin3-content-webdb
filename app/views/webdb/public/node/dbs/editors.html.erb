@@ -1,0 +1,17 @@
+<div class="contentWebdb">
+<table class="index">
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: left;" class="title">
+      <%= simple_format entry_item_value(item.db.items.first, item, item.files).gsub(/file_contents\//, "#{item.id}/file_contents/") %>
+    </td>
+    <td style="text-align: center;">
+      <%= link_to :show, item.public_uri %>
+    </td>
+    <td style="text-align: center;">
+      <%= link_to :edit, item.edit_uri %>
+    </td>
+  </tr>
+  <%- end -%>
+</table>
+</div>

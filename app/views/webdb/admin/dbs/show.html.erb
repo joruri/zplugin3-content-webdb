@@ -1,0 +1,59 @@
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :state %></th>
+    <td><%= @item.state_text %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :title %></th>
+    <td><%= @item.title %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :body %></th>
+    <td><%= @item.body %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :sort_no %></th>
+    <td><%= @item.sort_no %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :list_body %></th>
+    <td><%=hbr @item.list_body %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :detail_body %></th>
+    <td><%=hbr @item.detail_body %></td>
+  </tr>
+  </table>
+  <% if defined?(Zplugin3::Content::Login::Engine)
+    @item.group_pages.each do |l|%>
+    <table class="show">
+      <tr>
+        <th>
+        <%= l.style_type_text %><br />
+        <%= l.group.try(:title) %>閲覧用
+        </th>
+        <td>
+          <%= l.body %>
+        </td>
+      </tr>
+    </table>
+    <% end %>
+  <% end %>
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :display_limit %></th>
+    <td><%= @item.display_limit %></td>
+  </tr>
+  <% if defined?(Zplugin3::Content::Login::Engine) %>
+  <tr>
+    <th><%= @item.class.human_attribute_name :member_content_id %></th>
+    <td><%= @item.member_content.try(:name) %></td>
+   </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :editor_content_id %></th>
+    <td><%= @item.editor_content.try(:name) %></td>
+  </tr>
+  <% end %>
+</table>
+
+<%= creator_view @item %>

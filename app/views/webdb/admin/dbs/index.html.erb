@@ -1,0 +1,26 @@
+<table class="index">
+  <tr>
+    <th style="text-align: center; width: 60px;">詳細</th>
+    <th style="text-align: center; width: 80px;"><%= Webdb::Db.human_attribute_name :id %></th>
+    <th><%= Webdb::Db.human_attribute_name :title %></th>
+    <th style="text-align: center; width: 150px;"><%= Webdb::Item.model_name.human %></th>
+    <th style="text-align: center; width: 150px;"><%= Webdb::Entry.model_name.human %></th>
+    <th style="text-align: center; width: 80px;"><%= Webdb::Db.human_attribute_name :sort_no %></th>
+    <th style="text-align: center; width: 150px;"><%= Webdb::Db.human_attribute_name :created_at %></th>
+    <th style="text-align: center; width: 60px;"><%= Webdb::Db.human_attribute_name :state %></th>
+  </tr>
+  <%- @items.each do |item| -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td style="text-align: center;"><%= link_to :show, webdb_db_path(content: @content, id: item.id) %></td>
+    <td style="text-align: right;"><%= item.id %></td>
+    <td style="text-align: left;"><%= item.title %></td>
+    <td style="text-align: center;"><%= link_to "#{Webdb::Item.model_name.human}一覧", webdb_db_items_path(content: @content, db_id: item.id) %></td>
+    <td style="text-align: center;"><%= link_to "#{Webdb::Entry.model_name.human}一覧", webdb_db_entries_path(content: @content, db_id: item.id) %></td>
+    <td style="text-align: right;"><%= item.sort_no %></td>
+    <td style="text-align: center;"><%=l item.created_at %></td>
+    <td style="text-align: center;"><%= item.state_text %></td>
+  </tr>
+  <%- end -%>
+</table>
+
+<%= paginate @items -%>

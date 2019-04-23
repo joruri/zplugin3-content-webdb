@@ -1,0 +1,9 @@
+<%= render 'shared/admin/content/settings/form', f: f, item: @item -%>
+<%- if @item.name == 'map_setting' -%>
+<table class="show">
+  <tr>
+    <th>デフォルト座標</th>
+    <td><%= text_field_tag 'item[extra_values][lat_lng]', @item.extra_values[:lat_lng], style: 'width: 400px;' %>（緯度,経度）</td>
+  </tr>
+</table>
+<%- end -%>

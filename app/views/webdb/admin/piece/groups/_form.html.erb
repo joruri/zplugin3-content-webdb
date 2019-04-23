@@ -1,0 +1,100 @@
+<%= render 'shared/admin/piece/form', f: f do -%>
+<p class="form">詳細設定</p>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :target_db_id %></th>
+    <td><%= f.array_select 'in_settings[target_db_id]', @item.target_dbs_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :target_field_id %></th>
+    <td><%= f.array_select 'in_settings[target_field_id]', @item.target_fields_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :grouping_field_id %></th>
+    <td><%= f.array_select 'in_settings[grouping_field_id]', @item.grouping_fields_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :value_field_id %></th>
+    <td><%= f.array_select 'in_settings[value_field_id]', @item.grouping_fields_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_field_id %></th>
+    <td><%= f.array_select 'in_settings[sort_field_id]', @item.grouping_fields_for_option, include_blank: true %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :target_url %></th>
+    <td><%= f.array_text_field 'in_settings[target_url]', style: 'width: 500px;' %></td>
+  </tr>
+</table>
+<%- end -%>
+<%= javascript_tag do -%>
+$(document).ready(function() {
+  $('#item_in_settings_target_db_id').on('change', function (event) {
+    var db_id = parseInt(event.target.value);
+    if (isNaN(db_id)) {
+      $('#item_in_settings_target_field_id').html('<option value=""></option>');
+    } else {
+      $('#item_reference_item_id').html('<option value="">更新中...</option>');
+      $('#item_in_settings_grouping_field_id').html('<option value=""></option>');
+      $('#item_in_settings_value_field_id').html('<option value=""></option>');
+      $('#item_in_settings_sort_field_id').html('<option value=""></option>');
+      $.get('<%= webdb_dbs_path(content: @item.content) %>/' + db_id + '/items.json', function(data) {
+        $('#item_in_settings_target_field_id').children().remove();
+        $('#item_in_settings_grouping_field_id').html('<option value=""></option>');
+        $('#item_in_settings_value_field_id').html('<option value=""></option>');
+        $('#item_in_settings_sort_field_id').html('<option value=""></option>');
+        $('#item_in_settings_target_field_id').html('<option value=""></option>');
+        $.each(data, function(i, e) {
+          var item_type = data[i].item_type;
+          if(['select_data', 'radio_data', 'check_data'].indexOf(item_type) >= 0){
+            $('#item_in_settings_target_field_id')
+              .append($("<option>").val(data[i].id).text(data[i].title));
+          }
+        });
+      });
+    }
+  });
+
+  $('#item_in_settings_target_field_id').on('change', function (event) {
+    var item_id = parseInt(event.target.value);
+    var db_id   = $('#item_in_settings_target_db_id').val();
+    loadTargetField(db_id, item_id);
+  });
+
+  function loadTargetField(target_db_id, item_id){
+    if (isNaN(target_db_id) || isNaN(item_id)) {
+      $('#item_in_settings_grouping_field_id').html('<option value=""></option>');
+      $('#item_in_settings_value_field_id').html('<option value=""></option>');
+      $('#item_in_settings_sort_field_id').html('<option value=""></option>');
+    }else{
+      $.get('<%= webdb_dbs_path(content: @item.content) %>/' + target_db_id + '/items/' + item_id +'.json', function(data) {
+        if(data.reference_id){
+          loadDbFields(data.reference_id);
+        }else{
+          alert("データベース参照選択の項目を設定してください。");
+        }
+      });
+    }
+  }
+
+  function loadDbFields(db_id){
+    if (isNaN(db_id)) {
+      $('#item_reference_item_id').html('<option value=""></option>');
+    } else {
+      $('#item_reference_item_id').html('<option value="">更新中...</option>');
+      $.get('<%= webdb_dbs_path(content: @item.content) %>/' + db_id + '/items.json', function(data) {
+      $('#item_in_settings_grouping_field_id').html('<option value=""></option>');
+      $('#item_in_settings_value_field_id').html('<option value=""></option>');
+      $('#item_in_settings_sort_field_id').html('<option value=""></option>');
+        $.each(data, function(i, e) {
+          $('#item_in_settings_grouping_field_id').append($("<option>").val(data[i].id).text(data[i].title));
+          $('#item_in_settings_value_field_id').append($("<option>").val(data[i].id).text(data[i].title));
+          $('#item_in_settings_sort_field_id').append($("<option>").val(data[i].id).text(data[i].title));
+        });
+      });
+    }
+  }
+
+});
+<%- end -%>

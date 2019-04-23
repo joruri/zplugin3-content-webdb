@@ -1,0 +1,32 @@
+<%- return '' unless defined?(db) && defined?(item_values) && defined?(files) -%>
+<table class="show information">
+<%- db.items.public_state.each do |item|
+  next if skip_fields.include?(item.name) if defined?(skip_fields) -%>
+  <%- if item.item_type == 'rich_text' -%>
+    <tr>
+      <th colspan="2"><%= item.title %></th>
+    </tr>
+    <tr>
+      <td colspan="2" class="cke_editor_wrapper">
+        <%= text_area_tag "item_values[#{item.name}]",
+          item_values[item.name].to_s.gsub(/\/_system\/(.*?)file_contents\//, "#{@item.id}/file_contents/"),
+          class: 'ckeditor' %>
+      </td>
+    </tr>
+  <%- elsif item.item_type == 'attachment_file' && Core.mode != "system" -%>
+    <tr>
+      <th><%= item.title %></th>
+      <td>
+        <%= @item.item_values[item.name] %>
+      </td>
+    </tr>
+  <%- else -%>
+    <tr>
+      <th><%= item.title %></th>
+      <td>
+        <%= entry_item_value(item, @item, files)%>
+      </td>
+    </tr>
+  <%- end -%>
+<%- end -%>
+  </table>

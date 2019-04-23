@@ -1,0 +1,18 @@
+<%= init_ckeditor readOnly: true %>
+<%= render 'webdb/admin/shared/show', db: @item.db, item_values: @item.item_values,
+  files: @item.files,  file_uri: @item.file_content_uri if @item.db %>
+
+<% if defined?(Zplugin3::Content::Login::Engine) && @db.editor_content %>
+<table class="show">
+  <tr>
+    <th><%= @item.class.human_attribute_name :editor_id %></th>
+    <td><%= @item.editor_user.try(:account) %></td>
+  </tr>
+</table>
+<% end %>
+
+<%= render 'sys/admin/_partial/files/expanded_view', item: @item, content: @content %>
+
+<%= google_map_view @item if @content.map_enabled? %>
+
+<%= creator_view @item %>

@@ -1,0 +1,33 @@
+
+<% items.each do |item| %>
+  <div class="criteria_<%=item.name%>">
+      <legend><%=item.title%></legend>
+      <ul>
+      <%- case item.item_type -%>
+      <%- when 'select' -%>
+      <%- when 'blank_integer' -%>
+        <li><%= check_box_tag "criteria[#{item.name}]", true, false,
+            id: "criteria_#{item.name}" %>
+        <label for='<%="criteria_#{item.name}"%>'>あり</label></li>
+      <%- when 'blank_date' -%>
+        <li>
+          <%= text_field_tag "criteria[#{item.name}][date]", '', class: 'datepicker' %>
+          <% @piece.options_for_field(item).each do |opt| %>
+          <%= hidden_field_tag "criteria[#{item.name}][option][]", opt%>
+          <% end %>
+        </li>
+      <%- when 'blank_weekday' -%>
+          <%- I18n.t('date.abbr_day_names').each_with_index{|w, i| -%>
+            <li>
+              <%= check_box_tag "criteria[#{item.name}][weekday][#{i}]", true, false,
+                id: "criteria_#{item.name}_weekday_#{i}" %>
+              <label for='<%="criteria_#{item.name}_weekday_#{i}"%>'><%= w %></label>
+            </li>
+          <%- } -%>
+          <% @piece.options_for_field(item).each do |opt| %>
+          <%= hidden_field_tag "criteria[#{item.name}][option][]", opt%>
+          <% end %>
+      <%end%>
+      </ul>
+  </div>
+<% end %>

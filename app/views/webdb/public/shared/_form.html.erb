@@ -1,0 +1,110 @@
+<% items.each do |item| %>
+  <div class="criteria_<%=item.name%>">
+    <div class="title"><%=item.title%></div>
+    <div class="conditions">
+    <%- case item.item_type -%>
+    <%- when 'radio_button' -%>
+      <%- item.item_options_for_select.each_with_index do |option, i| -%>
+        <div>
+          <label>
+          <%= radio_button_tag "criteria[#{item.name}]", option, nil,
+             style: item.style_attribute, id: "criteria_#{item.name}_#{i}" %>
+             <%= option %>
+          </label>
+        </div>
+      <%- end -%>
+    <%- when 'radio_data' -%>
+      <%- item.item_options_for_select_data.each_with_index do |option, i| -%>
+        <div>
+          <label>
+          <%= radio_button_tag "criteria[#{item.name}]", option[1], nil,
+            style: item.style_attribute, id: "criteria_#{item.name}_#{i}" %>
+          <%= option[0] %>
+         </label>
+        </div>
+      <%- end -%>
+    <%- when 'select', 'check_box' -%>
+      <%- item.item_options_for_select.each_with_index{|w, i| -%>
+        <div>
+          <label>
+          <%= check_box_tag "criteria[#{item.name}][]", w, false, id: "criteria_#{item.name}_#{i}" %>
+          <label for='<%="criteria_#{item.name}_#{i}"%>'><%=w%>
+          </label>
+        </div>
+      <%- } -%>
+    <%- when 'select_data', 'check_data' -%>
+      <%- select_data = item.item_options_for_values_and_icons
+      select_data = item.item_options_for_select_data if select_data.blank?
+        select_data.each_with_index{|w, i| -%>
+        <div>
+          <label>
+          <%= check_box_tag "criteria[#{item.name}][]", w[1], false, id: "criteria_#{item.name}_#{i}" %>
+          <%- if w[2].present? -%><%= image_tag(w[2]) %><%- end -%>
+          <span><%=w[0]%></span>
+          </label>
+        </div>
+      <%- } -%>
+    <%- when 'office_hours' -%>
+      <div>
+      <%= select_tag "criteria[#{item.name}][week]",
+                     options_for_select(Webdb::Entry::WEEKDAY_OPTIONS, nil),
+                     style: item.style_attribute,
+                     include_blank: true %>
+        <%= select_tag "criteria[#{item.name}][hour]",
+                     options_for_select(Webdb::Entry::TIME_OPTIONS, nil),
+                     style: item.style_attribute,
+                     include_blank: true %>：
+        <%= select_tag "criteria[#{item.name}][min]",
+                     options_for_select(Webdb::Entry::MINUTE_OPTIONS, nil),
+                     style: item.style_attribute,
+                     include_blank: true %>
+      </div>
+    <%- when 'ampm' -%>
+      <%- Webdb::Entry::WEEKDAY_OPTIONS.each_with_index{|w, i| -%>
+        <div>
+        <%= w %>
+        <%= check_box_tag "criteria[#{item.name}][am][#{i}]", true, false,
+          id: "criteria_#{item.name}_am_#{i}" %>
+          <label for='<%="criteria_#{item.name}_am_#{i}"%>'>午前</label>
+        <%= check_box_tag "criteria[#{item.name}][pm][#{i}]", true, false,
+          id: "criteria_#{item.name}_pm_#{i}" %>
+          <label for='<%="criteria_#{item.name}_pm_#{i}"%>'>午後</label>
+        </div>
+      <%- } -%>
+    <%- when 'blank_integer' -%>
+      <div>
+        <label>
+          <%= check_box_tag "criteria[#{item.name}]", true, false,
+          id: "criteria_#{item.name}" %>あり
+        </label>
+      </div>
+    <%- when 'blank_date' -%>
+      <div>
+        <%= text_field_tag "criteria[#{item.name}][date]", '', class: 'datepicker' %>
+        <%= select_tag "criteria[#{item.name}][option]",
+                       options_for_select(item.item_options_for_select, nil),
+                       style: item.style_attribute,
+                       include_blank: true %>
+      </div>
+    <%- when 'blank_weekday' -%>
+        <%- I18n.t('date.abbr_day_names').each_with_index{|w, i| -%>
+          <div>
+            <label>
+              <%= check_box_tag "criteria[#{item.name}][weekday][#{i}]", true, false,
+                id: "criteria_#{item.name}_weekday_#{i}" %>
+              <%= w %>
+            </label>
+          </div>
+        <%- } -%>
+        <div>
+        <%= select_tag "criteria[#{item.name}][option]",
+                       options_for_select(item.item_options_for_select,nil),
+                       style: item.style_attribute,
+                       include_blank: true %>
+         </div>
+    <%- else -%>
+      <div><%= text_field_tag "criteria[#{item.name}]", '' %></div>
+    <%end%>
+    </div>
+  </div>
+<% end %>

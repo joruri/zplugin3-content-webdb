@@ -1,0 +1,124 @@
+<span class="note">※は必須項目です。</span>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :state %></th>
+    <td><%= f.radio_buttons :state, @item.class::STATE_OPTIONS, :class => 'status' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :title %> <span class="note">※</span></th>
+    <td><%= f.text_field :title, :class => 'title' %></td>
+  </tr>
+  <tr>
+    <th><%= @item.class.human_attribute_name :body %></th>
+    <td><%= f.text_area :body %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :list_body %></th>
+    <td><%= f.text_area :list_body, :class => 'body' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :detail_body %></th>
+    <td><%= f.text_area :detail_body, :class => 'body' %></td>
+  </tr>
+</table>
+
+  <% if defined?(Zplugin3::Content::Login::Engine) %>
+  <table class="show" id="group_page_field">
+    <%-
+    @item.build_default_group_pages
+    @item.group_pages.each_with_index do |l, i| -%>
+    <tr>
+      <th>
+      <%= f.label :in_group_page_ids %>
+      <%= select_tag "item[in_group_pages][][style_type]",
+                             options_for_select(l.class::TYPE_OPTIONS, l.style_type) -%><br />
+      <br />
+      <%= select_tag "item[in_group_pages][][group_id]",
+                             options_for_select(@item.group_options_for_select, l.group_id),
+                             include_blank: true, class: 'selectMark' -%>閲覧用<br />
+      <%= link_to '削除', '#', id: "delete#{l.id}",class: 'remove_row' %>
+      </th>
+      <td>
+        <%= text_area_tag "item[in_group_pages][][body]", l.body, class: 'body' %>
+      </td>
+    </tr>
+    <%- end -%>
+  </table>
+
+  <span><%= button_tag '追加', type: 'button', id: 'add_row' %></span>
+  <% end %>
+
+<table class="show">
+  <tr>
+    <th><%= f.label :display_limit %></th>
+    <td><%= f.text_field :display_limit, :class => 'number' %></td>
+  </tr>
+  <tr>
+    <th><%= f.label :sort_no %></th>
+    <td><%= f.text_field :sort_no, :class => 'number' %></td>
+  </tr>
+  <% if defined?(Zplugin3::Content::Login::Engine) %>
+  <tr>
+    <th><%= f.label :member_content_id %></th>
+    <td><%= select_tag 'item[member_content_id]',
+                       options_from_collection_for_select(Login::Content::User.where(site_id: Core.site.id), :id, :name, @item.member_content_id), include_blank: true %></td>
+   </tr>
+  <tr>
+    <th><%= f.label :editor_content_id %></th>
+    <td><%= select_tag 'item[editor_content_id]',
+                       options_from_collection_for_select(Login::Content::User.where(site_id: Core.site.id), :id, :name, @item.editor_content_id), include_blank: true %></td>
+
+  </tr>
+  <% end %>
+
+</table>
+
+<%= creator_form f %>
+
+<%= javascript_tag do %>
+$(function() {
+
+  <% if @item.id %>
+  $('#group_page_field').on("click", "a.remove_row", function (e) {
+    var deleteURL = '<%= webdb_db_path(@content) %>/delete_page';
+    var itemId = $(this).attr('id')
+    var dateID = itemId.replace(/delete/, '')
+    if ( dateID != null ){
+      $.get( deleteURL + '?page_id=' + dateID , function(data) {
+          //
+        });
+    }
+    if ( $('#group_page_field tr').length == 1) {
+      $('#group_page_field').find('tr:last').find('input, label, select, textarea').each(function() {
+        $(this).val('');
+      });
+    } else {
+      $(this).parent().parent().remove();
+    }
+    return false;
+  });
+  <% else %>
+  $('#group_page_field').on("click", "a.remove_row", function (e) {
+    if ( $('#group_page_field tr').length == 1) {
+      $('#group_page_field').find('tr:last').find('input, label, select, textarea').each(function() {
+        $(this).val('');
+      });
+    } else {
+      $(this).parent().parent().remove();
+    }
+
+    return false;
+  });
+  <% end %>
+
+  $('#add_row').click(function(e) {
+    var clone = $('#group_page_field').find('tr:last').clone();
+    clone.find('input, label, select, textarea').each(function() {
+      $(this).val('');
+    });
+    $('#group_page_field').append(clone);
+  });
+
+});
+<% end %>
