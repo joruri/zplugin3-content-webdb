@@ -1,4 +1,4 @@
-# JoruriCMS2017 データベースプラグイン インストールマニュアル
+# Joruri CMS 2017 データベースプラグイン インストールマニュアル
 
 ## 1.想定環境
 
@@ -10,15 +10,15 @@
 * Database: PostgreSQL 9.5
 * Ruby: 2.6
 * Rails: 5.2
-* JoruriCMS 2017 Release4
+* Joruri CMS 2017 Release4
 
-## 2.JoruriCMS2017インストール
+## 2.Joruri CMS 2017インストール
 
-JoruriCMS2017のインストールを実施する
+Joruri CMS 2017のインストールを実施する
 
 ## 3.プラグイン機能の有効化
 
-JoruriCMS2017のプラグイン機能を有効化する。
+Joruri CMS 2017のプラグイン機能を有効化する。
 
     # su - joruri
     $ cd /var/www/joruri
@@ -32,7 +32,7 @@ JoruriCMS2017のプラグイン機能を有効化する。
 
 ## 4.データベースプラグインのインストール
 
-JoruriCMS2017管理画面にアクセスし、下記のプラグインをインストール
+Joruri CMS 2017管理画面にアクセスし、下記のプラグインをインストール
 
 * https://github.com/joruri/zplugin3-content-webdb
 
