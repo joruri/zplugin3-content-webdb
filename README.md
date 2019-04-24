@@ -1,6 +1,6 @@
 # Zplugin::Content::Webdb
 
-JoruriCMS2017で利用できるデータベースコンテンツプラグインです。
+Joruri CMS 2017で利用できるデータベースコンテンツプラグインです。
 データベースコンテンツの構築に必要な機能をインストールします。
 
 ## 想定環境
@@ -11,7 +11,7 @@ JoruriCMS2017で利用できるデータベースコンテンツプラグイン�
 * Database: PostgreSQL 9.5
 * Ruby: 2.6
 * Rails: 5.2
-* JoruriCMS 2017 Release4
+* Joruri CMS 2017 Release4
 
 ## インストール
 
