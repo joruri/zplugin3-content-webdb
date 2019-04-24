@@ -16,7 +16,21 @@
 
 JoruriCMS2017のインストールを実施する
 
-## 3.データベースプラグインのインストール
+## 3.プラグイン機能の有効化
+
+JoruriCMS2017のプラグイン機能を有効化する。
+
+    # su - joruri
+    $ cd /var/www/joruri
+    $ vi config/application.yml
+```
+  # ツールメニュー表示
+  show_tool_menu: true #falseからtrueに変更
+```
+    $ bundle exec rake unicorn:restart RAILS_ENV=production
+
+
+## 4.データベースプラグインのインストール
 
 JoruriCMS2017管理画面にアクセスし、下記のプラグインをインストール
 
