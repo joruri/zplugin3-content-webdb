@@ -43,7 +43,7 @@ Joruri CMS 2017管理画面にアクセスし、下記のプラグインをイ�
 |URL|https://github.com/|
 |プラグイン名|joruri/zplugin3-content-webdb|
 |タイトル|データベース|
-|バージョン|master|
+|バージョン|branch/master|
 
 一覧画面から「アプリ再起動」を実施する。
 「プラグイン名」欄にある「zomeki/zplugin3-content-webdb」リンクが有効になるので
