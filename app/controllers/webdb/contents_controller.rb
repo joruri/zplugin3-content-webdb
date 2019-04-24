@@ -11,7 +11,7 @@ class Webdb::ContentsController < Cms::Controller::Admin::Base
 
   def install
     Zplugin3::Content::Webdb::Engine.install
-    redirect_to url_for(action: :index), notice: 'インストールしました。'
+    return redirect_to zplugin3_content_webdb_engine.webdb_contents_path, notice: 'インストールしました。'
   end
 
 end
